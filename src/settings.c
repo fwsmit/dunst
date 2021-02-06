@@ -61,6 +61,104 @@ static FILE *xdg_config(const char *filename)
         return f;
 }
 
+void print_command(char **cmd, char *name) {
+        for (int i = 0; cmd[i] != NULL; i++) {
+                LOG_D("%s %i: %s", name, i, cmd[i]);
+        }
+}
+
+void print_mouse_list(enum mouse_action *mouse, char *name) {
+        for (int i = 0; mouse[i] != -1; i++) {
+                LOG_D("%s %i: %i", name, i, mouse[i]);
+        }
+}
+
+void print_notification_colors(struct notification_colors c, char* name) {
+        LOG_D ("Color %s", name);
+        LOG_D("%s, %s, %s, %s", c.fg, c.bg, c.frame, c.highlight);
+}
+
+void dump_settings(struct settings s){
+        LOG_D("print_notifications: %i", s.print_notifications);
+        LOG_D("per_monitor_dpi: %i", s.per_monitor_dpi);
+        LOG_D("stack_duplicates: %i", s.stack_duplicates);
+        LOG_D("hide_duplicate_count: %i", s.hide_duplicate_count);
+        LOG_D("always_run_script: %i", s.always_run_script);
+        LOG_D("force_xinerama: %i", s.force_xinerama);
+        LOG_D("force_xwayland: %i", s.force_xwayland);
+        LOG_D("progress_bar: %i", s.progress_bar);
+        LOG_D("font %s", s.font);
+        LOG_D("format: %s",s.format);
+        LOG_D("icon_path: %s",s.icon_path);
+        LOG_D("title: %s",s.title);
+        LOG_D("class: %s",s.class);
+        LOG_D("dmenu: %s",s.dmenu);
+        LOG_D("frame_color: %s",s.frame_color);
+        LOG_D("icons 1: %s", s.icons[0]);
+        LOG_D("icons 2: %s", s.icons[1]);
+        LOG_D("icons 3: %s", s.icons[2]);
+        LOG_D("timeouts 1: %li", s.timeouts[0]);
+        LOG_D("timeouts 2: %li", s.timeouts[1]);
+        LOG_D("timeouts 3: %li", s.timeouts[2]);
+
+        print_command(s.dmenu_cmd, "dmenu");
+        print_command(s.browser_cmd, "browser");
+        print_mouse_list(s.mouse_left_click, "left click");
+        print_mouse_list(s.mouse_middle_click, "middle click");
+        print_mouse_list(s.mouse_right_click, "right click");
+
+        LOG_D("icon_position: %i", s.icon_position);
+        LOG_D("vertical_alignment: %i", s.vertical_alignment);
+        LOG_D("follow_mode: %i", s.f_mode);
+        LOG_D("markup_mode: %i", s.markup);
+        LOG_D("alignment: %i", s.align);
+        LOG_D("ellipsize: %i", s.ellipsize);
+        LOG_D("layer: %i", s.layer);
+
+        print_notification_colors(s.colors_low, "low");
+        print_notification_colors(s.colors_norm, "norm");
+        print_notification_colors(s.colors_crit, "crit");
+
+        LOG_D("sep color: %s, type %i", s.sep_color.sep_color, s.sep_color.type);
+        /* struct separator_color_data sep_color; */
+        /* struct geometry geometry; */
+        /* struct keyboard_shortcut close_ks; */
+        /* struct keyboard_shortcut close_all_ks; */
+        /* struct keyboard_shortcut history_ks; */
+        /* struct keyboard_shortcut context_ks; */
+        /* struct notification_colors colors_low; */
+        /* struct notification_colors colors_norm; */
+        /* struct notification_colors colors_crit; */
+        /* gint64 idle_threshold; */
+        /* gint64 show_age_threshold; */
+        /* unsigned int transparency; */
+        /* int shrink; */
+        /* int sort; */
+        /* int indicate_hidden; */
+        /* int sticky_history; */
+        /* int history_length; */
+        /* int show_indicators; */
+        /* int word_wrap; */
+        /* int ignore_dbusclose; */
+        /* int ignore_newline; */
+        /* int line_height; */
+        /* int notification_height; */
+        /* int separator_height; */
+        /* int padding; */
+        /* int h_padding; */
+        /* int text_icon_padding; */
+        /* int frame_width; */
+        /* int startup_notification; */
+        /* int monitor; */
+        /* int min_icon_size; */
+        /* int max_icon_size; */
+        /* int corner_radius; */
+        /* int progress_bar_height; */
+        /* int progress_bar_min_width; */
+        /* int progress_bar_max_width; */
+        /* int progress_bar_frame_width; */
+}
+
 void load_settings(char *cmdline_config_path)
 {
 
@@ -806,6 +904,8 @@ void load_settings(char *cmdline_config_path)
                 "always_run_script", "-always_run_script", true,
                 "Always run rule-defined scripts, even if the notification is suppressed with format = \"\"."
         );
+
+        dump_settings(settings);
 
         /* push hardcoded default rules into rules list */
         for (int i = 0; i < G_N_ELEMENTS(default_rules); i++) {
