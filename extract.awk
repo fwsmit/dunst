@@ -80,6 +80,7 @@ BEGIN {
                 print "        .section = " SETTING_SECTION ","
                 print "        .description = " SETTING_DESCRIPTION ","
                 print "        .type = " SETTING_TYPE ","
+                print "        .value = " SETTING_LOCATION ","
                 print "        .default_value = " SETTING_DEFAULT ","
                 print "        .parser = NULL,"
                 print "        .parser_data = NULL,"
