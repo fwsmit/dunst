@@ -557,7 +557,7 @@ void draw_rounded_rect(cairo_t *c, int x, int y, int width, int height, int corn
 /**
  * A small wrapper around cairo_rectange for drawing a scaled rectangle.
  */
-void draw_rect(cairo_t *c, int x, int y, int width, int height, int scale) {
+void draw_rect(cairo_t *c, double x, double y, double width, double height, int scale) {
         cairo_rectangle(c, x * scale, y * scale, width * scale, height * scale);
 }
 
@@ -638,6 +638,26 @@ static cairo_surface_t *render_background(cairo_surface_t *srf,
         return cairo_surface_create_for_rectangle(srf, x * scale, y * scale, width * scale, height * scale);
 }
 
+static void render_progress_bar(cairo_t *c, struct colored_layout *cl, int x, int y, int width, int height, int frame_width, int scale) {
+        int progress = MIN(cl->n->progress, 100);
+
+        width = width - 2 * frame_width;
+        unsigned int progress_height = height - frame_width,
+                     frame_y = y - height;
+        double half_frame_width = frame_width / 2.0;
+
+        // Note: the bar could be drawn a bit smaller, because the frame is drawn on top
+        // left side
+        cairo_set_source_rgba(c, cl->highlight.r, cl->highlight.g, cl->highlight.b, cl->highlight.a);
+        draw_rect(c, x + frame_width, frame_y, width * progress / 100, progress_height, scale);
+        cairo_fill(c);
+        // border
+        cairo_set_source_rgba(c, cl->frame.r, cl->frame.g, cl->frame.b, cl->frame.a);
+        draw_rect(c, x + half_frame_width, frame_y + half_frame_width, width + frame_width, progress_height, scale);
+        cairo_set_line_width(c, frame_width * scale);
+        cairo_stroke(c);
+}
+
 static void render_content(cairo_t *c, struct colored_layout *cl, int width, int scale)
 {
         const int h = layout_get_height(cl, scale);
@@ -700,38 +720,13 @@ static void render_content(cairo_t *c, struct colored_layout *cl, int width, int
                 cairo_fill(c);
         }
 
-        // progress bar positioning
         if (have_progress_bar(cl->n)){
-                int progress = MIN(cl->n->progress, 100);
-                unsigned int frame_width = settings.progress_bar_frame_width,
-                             progress_width = MIN(width - 2 * settings.h_padding, settings.progress_bar_max_width),
-                             progress_height = settings.progress_bar_height - frame_width,
-                             frame_x = settings.h_padding,
-                             frame_y = settings.padding + h - settings.progress_bar_height,
-                             progress_width_without_frame = progress_width - 2 * frame_width,
-                             progress_width_1 = progress_width_without_frame * progress / 100,
-                             progress_width_2 = progress_width_without_frame - progress_width_1,
-                             x_bar_1 = frame_x + frame_width,
-                             x_bar_2 = x_bar_1 + progress_width_1;
-
-                double half_frame_width = frame_width / 2.0;
-
-                // draw progress bar
-                // Note: the bar could be drawn a bit smaller, because the frame is drawn on top
-                // left side
-                cairo_set_source_rgba(c, cl->highlight.r, cl->highlight.g, cl->highlight.b, cl->highlight.a);
-                draw_rect(c, x_bar_1, frame_y, progress_width_1, progress_height, scale);
-                cairo_fill(c);
-                // right side
-                cairo_set_source_rgba(c, cl->bg.r, cl->bg.g, cl->bg.b, cl->bg.a);
-                draw_rect(c, x_bar_2, frame_y, progress_width_2, progress_height, scale);
-                cairo_fill(c);
-                // border
-                cairo_set_source_rgba(c, cl->frame.r, cl->frame.g, cl->frame.b, cl->frame.a);
-                // TODO draw_rect instead of cairo_rectangle resulted in blurry lines. Why?
-                cairo_rectangle(c, (frame_x + half_frame_width) * scale, (frame_y + half_frame_width) * scale, (progress_width - frame_width) * scale, progress_height * scale);
-                cairo_set_line_width(c, frame_width * scale);
-                cairo_stroke(c);
+                int bar_width = MIN(width - 2 * settings.h_padding,
+                                settings.progress_bar_max_width);
+                render_progress_bar(c, cl, settings.h_padding,
+                                h + settings.padding, bar_width,
+                                settings.progress_bar_height,
+                                settings.progress_bar_frame_width, scale);
         }
 }
 
