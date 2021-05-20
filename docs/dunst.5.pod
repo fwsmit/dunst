@@ -112,6 +112,13 @@ When an integer value is passed to dunst as a hint (see B<NOTIFY-SEND>), a
 progress bar will be drawn at the bottom of the notification. This
 behavior can be turned off by setting this setting to false.
 
+The color of the progress bar can be set with the B<highlight> color. The frame
+color can be set with B<frame_color>.
+
+=item B<progress_bar_alignment> (values: [left/right/center], default: center)
+
+Set the alignment of the progress bar.
+
 =item B<progress_bar_height> (default: 10)
 
 The height of the progress bar in pixel. This includes the frame. Make sure
@@ -205,7 +212,8 @@ disable.
 
 =item B<frame_color color> (default: #888888)
 
-Defines color of the frame around the notification window. See COLORS.
+Defines color of the frame around the notification window and the progress bar.
+See COLORS.
 
 =item B<separator_color> (values: [auto/foreground/frame/#RRGGBB] default: auto)
 

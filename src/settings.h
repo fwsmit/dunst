@@ -119,6 +119,7 @@ struct settings {
         int progress_bar_min_width;
         int progress_bar_max_width;
         int progress_bar_frame_width;
+        enum alignment progress_bar_alignment;
         bool progress_bar;
         enum zwlr_layer_shell_v1_layer layer;
 };

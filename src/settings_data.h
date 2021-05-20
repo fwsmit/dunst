@@ -831,6 +831,16 @@ static const struct setting allowed_settings[] = {
                 .parser_data = NULL,
         },
         {
+                .name = "progress_bar_alignment",
+                .section = "global",
+                .description = "Set the progress bar alignment",
+                .type = TYPE_ENUM,
+                .default_value = "left",
+                .value = &settings.progress_bar_alignment,
+                .parser = string_parse_enum,
+                .parser_data = horizontal_alignment_enum_data,
+        },
+        {
                 .name = "stack_duplicates",
                 .section = "global",
                 .description = "Stack together notifications with the same content",

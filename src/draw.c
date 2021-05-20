@@ -723,9 +723,21 @@ static void render_content(cairo_t *c, struct colored_layout *cl, int width, int
         if (have_progress_bar(cl->n)){
                 int bar_width = MIN(width - 2 * settings.h_padding,
                                 settings.progress_bar_max_width);
-                render_progress_bar(c, cl, settings.h_padding,
-                                h + settings.padding, bar_width,
-                                settings.progress_bar_height,
+                int bar_x = 0;
+                switch (settings.progress_bar_alignment) {
+                        case ALIGN_LEFT:
+                                bar_x = settings.h_padding;
+                                break;
+                        case ALIGN_CENTER:
+                                bar_x = (width - bar_width) / 2.0;
+                                break;
+                        case ALIGN_RIGHT:
+                                bar_x = width - settings.h_padding - bar_width;
+                                break;
+                }
+
+                render_progress_bar(c, cl, bar_x, h + settings.padding,
+                                bar_width, settings.progress_bar_height,
                                 settings.progress_bar_frame_width, scale);
         }
 }
