@@ -12,11 +12,6 @@
 #include "settings.h"
 #include "utils.h"
 
-static bool is_readable_file(const char *filename)
-{
-        return (access(filename, R_OK) != -1);
-}
-
 /**
  * Reassemble the data parts of a GdkPixbuf into a cairo_surface_t's data field.
  *
