@@ -7,6 +7,7 @@
 
 #include "../src/log.h"
 #include "../src/settings.h"
+#include "bench.c"
 
 const char *base;
 
@@ -59,6 +60,8 @@ int main(int argc, char *argv[]) {
         RUN_SUITE(suite_settings_data);
         RUN_SUITE(suite_dbus);
         RUN_SUITE(suite_setting);
+
+        bench_icon_search();
 
         base = NULL;
         g_free(config_path);
