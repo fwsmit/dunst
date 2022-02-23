@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 #include "dbus.h"
 #include "draw.h"
@@ -145,9 +146,76 @@ static void teardown(void)
         draw_deinit();
 }
 
+int parse_config_arguments(int argc, char **argv) {
+        static const struct option long_options[] = {
+                {"help", no_argument, 0, 'h'},
+                {"config", required_argument, 0, 'c'},
+                /* {"version", no_argument, 0, 'v'}, */
+                {"print", no_argument, 0, 0},
+                {"startup_notification", no_argument, 0, 0},
+                {0},
+        };
+
+        optind = 1;
+        char *config_arg = NULL;
+        int opt_status = 0;
+        while (1) {
+                int option_index = -1;
+                int c = getopt_long(argc, argv, "hc:", long_options, &option_index);
+                if (c < 0) {
+                        break;
+                } else if (c == 'h') {
+                        opt_status = 1;
+                        break;
+                /* } else if (c == 'v') { */
+                        /* opt_status = 0; */
+                        break;
+                } else if (c == 'c') {
+                        free(config_arg);
+                        config_arg = strdup(optarg);
+                } else if (c != 0) {
+                        opt_status = -1;
+                        break;
+                }
+        }
+
+        if (opt_status != 0) {
+                free(config_arg);
+                return opt_status;
+        }
+
+        /* int config_status = load_config_file(config, config_arg); */
+        /* if (config_status < 0) { */
+                /* return -1; */
+        /* } */
+
+        /* optind = 1; */
+        /* while (1) { */
+                /* int option_index = -1; */
+                /* int c = getopt_long(argc, argv, "hc:v", long_options, &option_index); */
+                /* if (c < 0) { */
+                        /* break; */
+                /* } else if (c == 'h' || c == 'c' || c == 'v') { */
+                        /* continue; */
+                /* } else if (c != 0) { */
+                        /* return -1; */
+                /* } */
+
+                /* const char *name = long_options[option_index].name; */
+                /* if (!apply_global_option(config, name, optarg)) { */
+                        /* fprintf(stderr, "Failed to parse option '%s'\n", name); */
+                        /* return -1; */
+                /* } */
+        /* } */
+
+        return 0;
+}
+
 int dunst_main(int argc, char *argv[])
 {
 
+        int res = parse_config_arguments(argc, argv);
+        exit(res);
         dunst_status(S_RUNNING, true);
         dunst_status(S_IDLE, false);
 
