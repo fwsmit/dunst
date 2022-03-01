@@ -171,7 +171,7 @@ int queues_notification_insert(struct notification *n)
                 if (settings.always_run_script) {
                         notification_run_script(n);
                 }
-                LOG_M("Skipping notification: '%s' '%s'", n->body, n->summary);
+                LOG_M("Skipping notification: '%s' '%s'", n->summary, n->body);
                 return 0;
         }
 
