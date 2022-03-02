@@ -1,4 +1,5 @@
 #include "greatest.h"
+#include "./icon-lookup.h"
 #include "../src/icon-lookup.c"
 #include "helpers.h"
 #include "../src/notification.h"
