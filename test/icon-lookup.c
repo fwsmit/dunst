@@ -84,12 +84,6 @@ TEST test_new_icon_overrides_raw_icon(void) {
         ASSERT(old_icon == n->icon);
         rule_apply(rule, n);
         ASSERT(old_icon != n->icon);
-        /* n->icon = malloc(1); // allocate some data to emulate a raw icon */
-
-        /* printf("%lu\n", sizeof(n->icon)); */
-
-
-        /* printf("%lu\n", sizeof(n->icon)); */
 
         free(n->icon);
         n->icon = NULL;
@@ -159,7 +153,6 @@ TEST test_bench_doesnt_exist(void)
         for (int i = 0; i < 1000; i++){
                 // Icon size is chosen as some common icon size.
                 char *icon = find_icon_path("doesn't exist", 48);
-                /* printf("%s\n", icon); */
                 ASSERT_FALSE(icon);
                 g_free(icon);
         }
