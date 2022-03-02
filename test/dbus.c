@@ -2,7 +2,6 @@
 #include "./dbus.h"
 #include "../src/dbus.c"
 #include "../src/rules.h"
-#include "greatest.h"
 
 #include <assert.h>
 
@@ -251,19 +250,29 @@ void dbus_notification_set_raw_image(struct dbus_notification *n_dbus, const cha
                             g_variant_ref_sink(hint));
 }
 
-/////// TESTS
 gint owner_id;
-
-TEST test_dbus_init(void)
+bool dbus_init_and_wait(gint *owner_id)
 {
-        owner_id = dbus_init();
+        *owner_id = dbus_init();
         uint waiting = 0;
         while (!dbus_conn && waiting < 2000) {
                 usleep(500);
                 waiting++;
         }
+        return dbus_conn != NULL;
+}
+
+void dbus_clear_connection()
+{
+        dbus_conn = NULL;
+}
+
+/////// TESTS
+
+TEST test_dbus_init(void)
+{
         ASSERTm("After 1s, there is still no dbus connection available.",
-                dbus_conn);
+                dbus_init_and_wait(&owner_id));
         PASS();
 }
 
@@ -891,10 +900,10 @@ TEST test_timeout(void)
 
 // TESTS END
 
-GMainLoop *loop;
-GThread *thread_tests;
+static GMainLoop *loop;
+static GThread *thread_tests;
 
-gpointer run_threaded_tests(gpointer data)
+static gpointer run_threaded_tests(gpointer data)
 {
         RUN_TEST(test_dbus_init);
 
@@ -951,6 +960,7 @@ SUITE(suite_dbus)
         g_object_unref(dbus_bus);
         g_thread_unref(thread_tests);
         g_main_loop_unref(loop);
+        dbus_clear_connection();
 }
 
 /* vim: set tabstop=8 shiftwidth=8 expandtab textwidth=0: */
