@@ -1,11 +1,10 @@
 #define wake_up wake_up_void
+#include "./dbus.h"
 #include "../src/dbus.c"
 #include "../src/rules.h"
 #include "greatest.h"
 
 #include <assert.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gio/gio.h>
 
 #include "helpers.h"
 #include "queues.h"
@@ -161,17 +160,6 @@ GVariant *dbus_invoke(const char *method, GVariant *params)
 
         return retdata;
 }
-
-struct dbus_notification {
-        const char* app_name;
-        guint replaces_id;
-        const char* app_icon;
-        const char* summary;
-        const char* body;
-        GHashTable *actions;
-        GHashTable *hints;
-        int expire_timeout;
-};
 
 void g_free_variant_value(gpointer tofree)
 {
