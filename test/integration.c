@@ -8,12 +8,47 @@
 #include <gio/gio.h>
 
 static gint owner_id;
+
+TEST test_hint_icons2(void)
+{
+        struct notification *n;
+        struct dbus_notification *n_dbus;
+        const char *iconname = "NEWICON";
+
+        gsize len = queues_length_waiting();
+
+        n_dbus = dbus_notification_new();
+        n_dbus->app_name = "dunstteststack";
+        n_dbus->app_icon = "NONE";
+        n_dbus->summary = "test_hint_icons";
+        n_dbus->body = "Summary of it";
+
+        g_hash_table_insert(n_dbus->hints,
+                            g_strdup("image-path"),
+                            g_variant_ref_sink(g_variant_new_string(iconname)));
+
+        guint id;
+        ASSERT(dbus_notification_fire(n_dbus, &id));
+        ASSERT(id != 0);
+
+        ASSERT_EQ(queues_length_waiting(), len+1);
+
+        n = queues_debug_find_notification_by_id(id);
+
+        ASSERT_STR_EQ(iconname, n->iconname);
+
+        dbus_notification_free(n_dbus);
+
+        PASS();
+}
+
 static GMainLoop *loop;
 static GThread *thread_tests;
 
 static gpointer run_threaded_tests(gpointer data)
 {
         dbus_init_and_wait(&owner_id);
+        RUN_TEST(test_hint_icons2);
 
         dbus_teardown(owner_id);
         g_main_loop_quit(loop);
