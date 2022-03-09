@@ -73,6 +73,7 @@ TEST test_layout_from_notification_no_icon(void)
 
 SUITE(suite_draw)
 {
+        struct output *output_tmp = output;
         output = &dummy_output;
         cairo_surface_t *s = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1);
         c = cairo_create(s);
@@ -82,4 +83,5 @@ SUITE(suite_draw)
                         RUN_TEST(test_layout_from_notification_icon_off);
                         RUN_TEST(test_layout_from_notification_no_icon);
         });
+        output = output_tmp;
 }
