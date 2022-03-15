@@ -22,6 +22,7 @@ bool dbus_notification_fire(struct dbus_notification *n, uint *id);
 bool dbus_init_and_wait();
 void dbus_notification_free(struct dbus_notification *n);
 void dbus_clear_connection();
+void dbus_notification_set_raw_image(struct dbus_notification *n_dbus, const char *path);
 
 #endif
 /* vim: set ft=c tabstop=8 shiftwidth=8 expandtab textwidth=0: */
